@@ -243,6 +243,16 @@ end
 local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
+-- Enforce tabstop = 4 and shiftwidth = 4 in .c and .h files
+vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
+  pattern = { '*.c', '*.h' },
+  callback = function()
+    vim.opt_local.tabstop = 4
+    vim.opt_local.shiftwidth = 4
+    vim.opt_local.expandtab = false
+  end,
+})
+
 -- [[ Configure and install plugins ]]
 --
 --  To check the current status of your plugins, run
@@ -260,6 +270,7 @@ require('lazy').setup({
   config = function()
     require('guess-indent').setup {
       auto_cmd = true,
+      override_editorconfig = true,
       default = 4,
     }
   end,
@@ -1043,3 +1054,18 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufNewFile' }, {
+  pattern = { '*.wistl' },
+  command = 'setfiletype wistl',
+})
+vim.api.nvim_create_autocmd({ 'FileType' }, {
+  pattern = { 'wistl' },
+  callback = function(ev)
+    vim.bo.autoindent = true
+    vim.bo.expandtab = true
+    vim.bo.shiftwidth = 4
+    vim.bo.softtabstop = 4
+    vim.bo.tabstop = 4
+    vim.bo.textwidth = 80
+  end,
+})
