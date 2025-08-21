@@ -170,6 +170,9 @@ vim.o.textwidth = 80
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
+-- Open Nvim-tree file tree system
+vim.api.nvim_set_keymap('n', '<leader>d', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
+
 -- Swap 'a' and 'A' behavior
 vim.api.nvim_set_keymap('n', 'a', 'A', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', 'A', 'a', { noremap = true, silent = true })
@@ -244,6 +247,16 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
   end,
 })
 
+-- Enforce tabstop = 2 and shiftwidth = 2 in .lua files
+vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
+  pattern = { '*.lua' },
+  callback = function()
+    vim.opt_local.tabstop = 2
+    vim.opt_local.shiftwidth = 2
+    vim.opt_local.expandtab = true
+  end,
+})
+
 -- [[ Configure and install plugins ]]
 --
 --  To check the current status of your plugins, run
@@ -256,6 +269,49 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
+
+  -- TODO: Get rainbow-delimiters or something like it
+
+  -- Vim Airline plugin
+  {
+    'vim-airline/vim-airline',
+    config = function()
+      -- Enable powerline fonts for better display
+      vim.g.airline_powerline_fonts = 1
+
+      -- TODO: Enable Git branch and diff status
+
+      -- Set the status line theme
+      vim.g.airline_theme = 'onedark'
+    end,
+  },
+
+  -- Vim Airline Themes plugin
+  {
+    'vim-airline/vim-airline-themes',
+  },
+
+  -- Nvim Tree plugin
+  {
+    'kyazdani42/nvim-tree.lua',
+    config = function()
+      require('nvim-tree').setup {
+        -- Configuration for nvim-tree
+        disable_netrw = true, -- Disable netrw (built-in file explorer)
+        hijack_netrw = true, -- Hijack netrw to open nvim-tree
+        auto_reload_on_write = true, -- Auto reload when file changes
+        view = {
+          width = 30, -- Width of the file explorer
+          side = 'left', -- Position on the left or right
+        },
+        update_focused_file = {
+          enable = true,
+          update_cwd = true, -- Update the current working directory
+        },
+      }
+    end,
+  },
+
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
   config = function()
