@@ -280,10 +280,10 @@ require('lazy').setup({
       vim.g.wintabs_show = 'buffers'
 
       -- Window management keybinds
-      vim.api.nvim_set_keymap('n', '<leader>tn', ':WintabNext', { noremap = true, silent = true })
-      vim.api.nvim_set_keymap('n', '<leader>tp', ':WintabPrevious', { noremap = true, silent = true })
-      vim.api.nvim_set_keymap('n', '<leader>ts', ':WintabSelect', { noremap = true, silent = true })
-      vim.api.nvim_set_keymap('n', '<leader>tx', ':WintabClose', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', '<leader>wn', ':WintabNext', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', '<leader>wp', ':WintabPrevious', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', '<leader>ws', ':WintabSelect', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', '<leader>wx', ':WintabClose', { noremap = true, silent = true })
     end,
   },
   'zefei/vim-wintabs-powerline',
