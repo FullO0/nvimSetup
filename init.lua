@@ -202,12 +202,6 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
--- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
--- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
--- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
--- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
--- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
-
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -272,6 +266,28 @@ require('lazy').setup({
 
   -- TODO: Get rainbow-delimiters or something like it
 
+  -- Vim powerline
+  'powerline/powerline',
+
+  -- Vim window tabs plugin
+  {
+    'zefei/vim-wintabs',
+    config = function()
+      -- Enable the tabline
+      vim.g.wintabs_enable = 1
+
+      -- Set tabline format
+      vim.g.wintabs_show = 'buffers'
+
+      -- Window management keybinds
+      vim.api.nvim_set_keymap('n', '<leader>tn', ':WintabNext', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', '<leader>tp', ':WintabPrevious', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', '<leader>ts', ':WintabSelect', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', '<leader>tx', ':WintabClose', { noremap = true, silent = true })
+    end,
+  },
+  'zefei/vim-wintabs-powerline',
+
   -- Vim Airline plugin
   {
     'vim-airline/vim-airline',
@@ -279,7 +295,18 @@ require('lazy').setup({
       -- Enable powerline fonts for better display
       vim.g.airline_powerline_fonts = 1
 
-      -- TODO: Enable Git branch and diff status
+      -- Style configurations
+      vim.g.airline_left_sep = '▶'
+      vim.g.airline_right_sep = '◀'
+      vim.g.airline_symbols.branch = '⎇'
+      vim.g.airline_stl_path_style = 'short'
+
+      -- Behaviour configurations
+      vim.g.airline_detect_collapse = 1
+
+      -- Git configurations
+      vim.g.airline_extensions_git_enabled = 1
+      vim.g.airline_extensions_branch_enabled = 1
 
       -- Set the status line theme
       vim.g.airline_theme = 'onedark'
