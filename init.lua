@@ -202,6 +202,8 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+vim.keymap.set('n', '<leader>w', '<C-w>')
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -279,11 +281,7 @@ require('lazy').setup({
       -- Set tabline format
       vim.g.wintabs_show = 'buffers'
 
-      -- Window management keybinds
-      vim.api.nvim_set_keymap('n', '<leader>wn', ':WintabNext', { noremap = true, silent = true })
-      vim.api.nvim_set_keymap('n', '<leader>wp', ':WintabPrevious', { noremap = true, silent = true })
-      vim.api.nvim_set_keymap('n', '<leader>ws', ':WintabSelect', { noremap = true, silent = true })
-      vim.api.nvim_set_keymap('n', '<leader>wx', ':WintabClose', { noremap = true, silent = true })
+      -- TODO: Window management keybinds
     end,
   },
   'zefei/vim-wintabs-powerline',
