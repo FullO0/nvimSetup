@@ -148,7 +148,7 @@ vim.o.splitbelow = true
 --   See `:help lua-options`
 --   and `:help lua-options-guide`
 vim.o.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣', eol = '↵' }
 
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
@@ -171,11 +171,12 @@ vim.o.textwidth = 80
 --  See `:help vim.keymap.set()`
 
 -- Open Nvim-tree file tree system
+-- FIXME: remove this feels useless
 vim.api.nvim_set_keymap('n', '<leader>d', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
 
 -- Swap 'a' and 'A' behavior
-vim.api.nvim_set_keymap('n', 'a', 'A', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', 'A', 'a', { noremap = true, silent = true })
+vim.keymap.set('n', 'a', 'A', { noremap = true, silent = true })
+vim.keymap.set('n', 'A', 'a', { noremap = true, silent = true })
 
 -- Format a c file with the .clang-format of file parent directory
 vim.keymap.set('n', '<leader>ffcr', ':!clang-format -i -style=file %<CR>', { noremap = true, silent = true })
@@ -201,8 +202,6 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-
-vim.keymap.set('n', '<leader>w', '<C-w>')
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -233,6 +232,8 @@ end
 local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
+-------------------------------------File Formats------------------------------
+
 -- Enforce tabstop = 4 and shiftwidth = 4 in .c and .h files
 vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
   pattern = { '*.c', '*.h' },
@@ -252,6 +253,8 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
     vim.opt_local.expandtab = true
   end,
 })
+
+-------------------------------------File Formats------------------------------
 
 -- [[ Configure and install plugins ]]
 --
@@ -282,6 +285,12 @@ require('lazy').setup({
       vim.g.wintabs_show = 'buffers'
 
       -- TODO: Window management keybinds
+      vim.keymap.set('n', '<leader>wn', ':WintabsNext<CR>', { noremap = true, silent = true })
+      vim.keymap.set('n', '<leader>wp', ':WintabsPrevious<CR>', { noremap = true, silent = true })
+      vim.keymap.set('n', '<leader>wf', ':WintabsFirst<CR>', { noremap = true, silent = true })
+      vim.keymap.set('n', '<leader>wl', ':WintabsLast<CR>', { noremap = true, silent = true })
+      vim.keymap.set('n', '<leader>wcc', ':WintabsClose<CR>', { noremap = true, silent = true })
+      vim.keymap.set('n', '<leader>wcw', ':WintabsCloseWindow<CR>', { noremap = true, silent = true })
     end,
   },
   'zefei/vim-wintabs-powerline',
