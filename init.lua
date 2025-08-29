@@ -84,6 +84,14 @@ I hope you enjoy your Neovim journey,
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
 
+-- [[ Lua Functions ]]
+
+-- Function to reset dimming on listchars
+local function undim_listchars()
+  vim.api.nvim_set_hl(0, 'SpecialKey', { link = 'NONE' }) -- tabs
+  vim.api.nvim_set_hl(0, 'Trail', { link = 'NONE' }) -- trailing spaces
+end
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -232,7 +240,10 @@ end
 local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
--------------------------------------File Formats------------------------------
+vim.api.nvim_create_autocmd('ColorScheme', {
+  pattern = '*',
+  callback = undim_listchars,
+})
 
 -- Enforce tabstop = 4 and shiftwidth = 4 in .c and .h files
 vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
@@ -241,16 +252,18 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
     vim.opt_local.tabstop = 4
     vim.opt_local.shiftwidth = 4
     vim.opt_local.expandtab = false
+    vim.opt_local.textwidth = 160
   end,
 })
 
--- Enforce tabstop = 2 and shiftwidth = 2 in .lua files
+-- Lua specific settings
 vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
   pattern = { '*.lua' },
   callback = function()
     vim.opt_local.tabstop = 2
     vim.opt_local.shiftwidth = 2
     vim.opt_local.expandtab = true
+    vim.opt_local.textwidth = 160
   end,
 })
 
