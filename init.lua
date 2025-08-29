@@ -83,14 +83,41 @@ I hope you enjoy your Neovim journey,
 
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
-
--- [[ Lua Functions ]]
+--
+------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------Functions--------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 -- Function to reset dimming on listchars
 local function undim_listchars()
   vim.api.nvim_set_hl(0, 'SpecialKey', { link = 'NONE' }) -- tabs
   vim.api.nvim_set_hl(0, 'Trail', { link = 'NONE' }) -- trailing spaces
 end
+
+-- Pads a line in nvim with dashes
+local function pad_line_with_dashes()
+  local line = vim.api.nvim_get_current_line()
+  local width = vim.o.textwidth
+  if width == 0 then
+    width = 80
+  end -- fallback if textwidth not set
+
+  local len = #line
+  if len >= width then
+    return
+  end -- do nothing if line is already longer
+
+  local total_dashes = width - len
+  local left = math.floor(total_dashes / 2)
+  local right = math.ceil(total_dashes / 2)
+
+  local new_line = string.rep('-', left) .. line .. string.rep('-', right)
+  vim.api.nvim_set_current_line(new_line)
+end
+
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------Vim Options-------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 -- Set <space> as the leader key
 -- See `:help mapleader`
@@ -175,18 +202,24 @@ vim.o.confirm = true
 -- Set width so that only 80 characters can appear as stated in CS244 project specs
 vim.o.textwidth = 80
 
--- [[ Basic Keymaps ]]
+------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------Keymaps---------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+
 --  See `:help vim.keymap.set()`
 
 -- Open Nvim-tree file tree system
--- FIXME: remove this feels useless
-vim.api.nvim_set_keymap('n', '<leader>d', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>d', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
 
 -- Swap 'a' and 'A' behavior
 vim.keymap.set('n', 'a', 'A', { noremap = true, silent = true })
 vim.keymap.set('n', 'A', 'a', { noremap = true, silent = true })
 
+-- Pad line with dashes command
+vim.keymap.set('n', '<leader>pl-', pad_line_with_dashes, { noremap = true, silent = true })
+
 -- Format a c file with the .clang-format of file parent directory
+-- FIXME: might remove this feels useless
 vim.keymap.set('n', '<leader>ffcr', ':!clang-format -i -style=file %<CR>', { noremap = true, silent = true })
 
 -- Clear highlights on search when pressing <Esc> in normal mode
@@ -211,7 +244,9 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
--- [[ Basic Autocommands ]]
+------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------Basic Autocommands---------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 --  See `:help lua-guide-autocommands`
 
 -- Highlight when yanking (copying) text
@@ -225,25 +260,15 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
--- [[ Install `lazy.nvim` plugin manager ]]
---    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
-local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-  local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
-  local out = vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
-  if vim.v.shell_error ~= 0 then
-    error('Error cloning lazy.nvim:\n' .. out)
-  end
-end
-
----@type vim.Option
-local rtp = vim.opt.rtp
-rtp:prepend(lazypath)
-
+-- undims or dims characters in listchars
 vim.api.nvim_create_autocmd('ColorScheme', {
   pattern = '*',
   callback = undim_listchars,
 })
+
+------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------File Specific Settings-------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 -- Enforce tabstop = 4 and shiftwidth = 4 in .c and .h files
 vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
@@ -263,14 +288,33 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
     vim.opt_local.tabstop = 2
     vim.opt_local.shiftwidth = 2
     vim.opt_local.expandtab = true
-    vim.opt_local.textwidth = 160
+    vim.opt_local.textwidth = 120
   end,
 })
 
--------------------------------------File Formats------------------------------
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------Lazy Autoinstall----------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
--- [[ Configure and install plugins ]]
---
+-- [[ Install `lazy.nvim` plugin manager ]]
+--    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
+local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
+  local out = vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
+  if vim.v.shell_error ~= 0 then
+    error('Error cloning lazy.nvim:\n' .. out)
+  end
+end
+
+---@type vim.Option
+local rtp = vim.opt.rtp
+rtp:prepend(lazypath)
+
+------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------Configure and install plugins----------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+
 --  To check the current status of your plugins, run
 --    :Lazy
 --
@@ -279,7 +323,6 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
 --  To update plugins you can run
 --    :Lazy update
 --
--- NOTE: Here is where you install your plugins.
 require('lazy').setup({
 
   -- TODO: Get rainbow-delimiters or something like it
