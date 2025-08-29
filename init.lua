@@ -209,14 +209,14 @@ vim.o.textwidth = 80
 --  See `:help vim.keymap.set()`
 
 -- Open Nvim-tree file tree system
-vim.keymap.set('n', '<leader>d', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>d', ':NvimTreeToggle<CR>', { noremap = true, silent = true, desc = '[D]irectory tree' })
 
 -- Swap 'a' and 'A' behavior
 vim.keymap.set('n', 'a', 'A', { noremap = true, silent = true })
 vim.keymap.set('n', 'A', 'a', { noremap = true, silent = true })
 
 -- Pad line with dashes command
-vim.keymap.set('n', '<leader>pl-', pad_line_with_dashes, { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>pl-', pad_line_with_dashes, { noremap = true, silent = true, desc = '[P]ad [L]ine [-]' })
 
 -- Format a c file with the .clang-format of file parent directory
 -- FIXME: might remove this feels useless
