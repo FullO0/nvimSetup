@@ -120,7 +120,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -144,6 +144,10 @@ vim.o.showmode = false
 vim.schedule(function()
   vim.o.clipboard = 'unnamedplus'
 end)
+
+-- Default tabstop and shiftwidth
+vim.o.shiftwidth = 4
+vim.o.tabstop = 4
 
 -- Enable break indent
 vim.o.breakindent = true
