@@ -88,12 +88,6 @@ P.S. You can delete this when you're done too. It's your config now! :)
 -------------------------------------------------------Functions--------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
 
--- Function to reset dimming on listchars
-local function undim_listchars()
-  vim.api.nvim_set_hl(0, 'SpecialKey', { link = 'NONE' }) -- tabs
-  vim.api.nvim_set_hl(0, 'Trail', { link = 'NONE' }) -- trailing spaces
-end
-
 -- Pads a line in nvim with dashes
 local function pad_line_with_dashes()
   local line = vim.api.nvim_get_current_line()
@@ -208,6 +202,14 @@ vim.o.textwidth = 80
 
 --  See `:help vim.keymap.set()`
 
+-- Window management keybinds
+vim.keymap.set('n', '<leader>wn', ':WintabsNext<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>wp', ':WintabsPrevious<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>wf', ':WintabsFirst<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>wl', ':WintabsLast<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>wcc', ':WintabsClose<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>wcw', ':WintabsCloseWindow<CR>', { noremap = true, silent = true })
+
 -- Open Nvim-tree file tree system
 vim.keymap.set('n', '<leader>d', ':NvimTreeToggle<CR>', { noremap = true, silent = true, desc = '[D]irectory tree' })
 
@@ -217,10 +219,6 @@ vim.keymap.set('n', 'A', 'a', { noremap = true, silent = true })
 
 -- Pad line with dashes command
 vim.keymap.set('n', '<leader>pl-', pad_line_with_dashes, { noremap = true, silent = true, desc = '[P]ad [L]ine [-]' })
-
--- Format a c file with the .clang-format of file parent directory
--- FIXME: might remove this feels useless
-vim.keymap.set('n', '<leader>ffcr', ':!clang-format -i -style=file %<CR>', { noremap = true, silent = true })
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
@@ -237,7 +235,6 @@ vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
---
 --  See `:help wincmd` for a list of all window commands
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
@@ -260,17 +257,30 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
--- undims or dims characters in listchars
-vim.api.nvim_create_autocmd('ColorScheme', {
-  pattern = '*',
-  callback = undim_listchars,
-})
-
 ------------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------File Specific Settings-------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
 
--- Enforce tabstop = 4 and shiftwidth = 4 in .c and .h files
+-- Set wistl file type
+vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufNewFile' }, {
+  pattern = { '*.wistl' },
+  command = 'setfiletype wistl',
+})
+
+-- Wistl specific settinges
+vim.api.nvim_create_autocmd({ 'FileType' }, {
+  pattern = { 'wistl' },
+  callback = function()
+    vim.bo.autoindent = true
+    vim.bo.expandtab = true
+    vim.bo.shiftwidth = 4
+    vim.bo.softtabstop = 4
+    vim.bo.tabstop = 4
+    vim.bo.textwidth = 80
+  end,
+})
+
+-- C specific settinges
 vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
   pattern = { '*.c', '*.h' },
   callback = function()
@@ -339,14 +349,6 @@ require('lazy').setup({
 
       -- Set tabline format
       vim.g.wintabs_show = 'buffers'
-
-      -- TODO: Window management keybinds
-      vim.keymap.set('n', '<leader>wn', ':WintabsNext<CR>', { noremap = true, silent = true })
-      vim.keymap.set('n', '<leader>wp', ':WintabsPrevious<CR>', { noremap = true, silent = true })
-      vim.keymap.set('n', '<leader>wf', ':WintabsFirst<CR>', { noremap = true, silent = true })
-      vim.keymap.set('n', '<leader>wl', ':WintabsLast<CR>', { noremap = true, silent = true })
-      vim.keymap.set('n', '<leader>wcc', ':WintabsClose<CR>', { noremap = true, silent = true })
-      vim.keymap.set('n', '<leader>wcw', ':WintabsCloseWindow<CR>', { noremap = true, silent = true })
     end,
   },
   'zefei/vim-wintabs-powerline',
@@ -401,16 +403,6 @@ require('lazy').setup({
       }
     end,
   },
-
-  -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
-  'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
-  config = function()
-    require('guess-indent').setup {
-      auto_cmd = true,
-      override_editorconfig = true,
-      default = 4,
-    }
-  end,
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
@@ -508,11 +500,8 @@ require('lazy').setup({
       -- Document existing key chains
       spec = {
         { '<leader>s', group = '[S]earch' },
+        { '<leader>f', group = '[F]ormat Buffer' },
         { '<leader>t', group = '[T]oggle' },
-        { '<leader>f', group = '[F]ormat' },
-        { '<leader>ff', group = '[F]ormat [F]ile' },
-        { '<leader>ffc', group = '[F]ormat [F]ile.[c]' },
-        { '<leader>ffcr', group = '[F]ormat [F]ile.[c] [R]&K' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
     },
@@ -890,8 +879,9 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'stylua', -- Used to format Lua code
-        'clangd', -- Used to format C
+        'stylua',
+        'clangd',
+        'clang-format',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -944,6 +934,7 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        c = { 'clang_format' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -1098,7 +1089,8 @@ require('lazy').setup({
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
-      --  and try some other statusline plugin
+      -- FIXME: can delete this becuase I have powerline
+      -- and try some other statusline plugin
       local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
       statusline.setup { use_icons = vim.g.have_nerd_font }
@@ -1187,22 +1179,4 @@ require('lazy').setup({
       lazy = '💤 ',
     },
   },
-})
-
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
-vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufNewFile' }, {
-  pattern = { '*.wistl' },
-  command = 'setfiletype wistl',
-})
-vim.api.nvim_create_autocmd({ 'FileType' }, {
-  pattern = { 'wistl' },
-  callback = function(ev)
-    vim.bo.autoindent = true
-    vim.bo.expandtab = true
-    vim.bo.shiftwidth = 4
-    vim.bo.softtabstop = 4
-    vim.bo.tabstop = 4
-    vim.bo.textwidth = 80
-  end,
 })
