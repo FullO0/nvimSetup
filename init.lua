@@ -291,7 +291,18 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
     vim.opt_local.tabstop = 4
     vim.opt_local.shiftwidth = 4
     vim.opt_local.expandtab = false
-    vim.opt_local.textwidth = 160
+    vim.opt_local.textwidth = 80
+  end,
+})
+
+-- nasm specific settinges
+vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
+  pattern = { '*.asm' },
+  callback = function()
+    vim.opt_local.tabstop = 2
+    vim.opt_local.shiftwidth = 2
+    vim.opt_local.expandtab = true
+    vim.opt_local.textwidth = 80
   end,
 })
 
