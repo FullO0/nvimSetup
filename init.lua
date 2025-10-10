@@ -120,7 +120,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = true
+vim.g.have_nerd_font = false
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -291,7 +291,18 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
     vim.opt_local.tabstop = 4
     vim.opt_local.shiftwidth = 4
     vim.opt_local.expandtab = false
-    vim.opt_local.textwidth = 160
+    vim.opt_local.textwidth = 80
+  end,
+})
+
+-- nasm specific settings
+vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
+  pattern = { '*.asm' },
+  callback = function()
+    vim.opt_local.tabstop = 2
+    vim.opt_local.shiftwidth = 2
+    vim.opt_local.expandtab = true
+    vim.opt_local.textwidth = 80
   end,
 })
 
