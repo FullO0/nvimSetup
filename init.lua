@@ -351,15 +351,6 @@ rtp:prepend(lazypath)
 require('lazy').setup({
 
   -- TODO: Get rainbow-delimiters or something like it
-  {
-    'lervag/vimtex',
-    ft = 'tex', -- load only for LaTeX files
-    config = function()
-      vim.g.vimtex_compiler_method = 'latexmk' -- automatic compilation
-      vim.g.vimtex_view_method = 'zathura' -- PDF viewer
-      vim.g.vimtex_quickfix_mode = 0 -- don't auto open errors
-    end,
-  },
 
   -- Vim powerline
   'powerline/powerline',
