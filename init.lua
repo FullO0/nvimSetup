@@ -120,7 +120,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -352,12 +352,11 @@ require('lazy').setup({
 
   -- TODO: Get rainbow-delimiters or something like it
 
-  -- Vim powerline
-  'powerline/powerline',
-
   -- Vim window tabs plugin
   {
     'zefei/vim-wintabs',
+    dependencies = { 'zefei/vim-wintabs-powerline' },
+    event = 'VimEnter',
     config = function()
       -- Enable the tabline
       vim.g.wintabs_enable = 1
@@ -365,37 +364,6 @@ require('lazy').setup({
       -- Set tabline format
       vim.g.wintabs_show = 'buffers'
     end,
-  },
-  'zefei/vim-wintabs-powerline',
-
-  -- Vim Airline plugin
-  {
-    'vim-airline/vim-airline',
-    config = function()
-      -- Enable powerline fonts for better display
-      vim.g.airline_powerline_fonts = 1
-
-      -- Style configurations
-      vim.g.airline_left_sep = '▶'
-      vim.g.airline_right_sep = '◀'
-      vim.g.airline_symbols.branch = '⎇'
-      vim.g.airline_stl_path_style = 'short'
-
-      -- Behaviour configurations
-      vim.g.airline_detect_collapse = 1
-
-      -- Git configurations
-      vim.g.airline_extensions_git_enabled = 1
-      vim.g.airline_extensions_branch_enabled = 1
-
-      -- Set the status line theme
-      vim.g.airline_theme = 'onedark'
-    end,
-  },
-
-  -- Vim Airline Themes plugin
-  {
-    'vim-airline/vim-airline-themes',
   },
 
   -- Nvim Tree plugin
@@ -416,6 +384,43 @@ require('lazy').setup({
           update_cwd = true, -- Update the current working directory
         },
       }
+    end,
+  },
+
+  -- Lualine status line plugin
+  {
+    'nvim-lualine/lualine.nvim',
+    requires = { 'nvim-tree/nvim-web-devicons' },
+    opts = {
+      options = {
+        theme = 'onedark',
+        globalstatus = true,
+      },
+      tabline = {},
+      winbar = {},
+    },
+  },
+
+  { -- You can easily change to a different colorscheme.
+    -- Change the name of the colorscheme plugin below, and then
+    -- change the command in the config to whatever the name of that colorscheme is.
+    --
+    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+    'navarasu/onedark.nvim',
+    priority = 1000, -- Make sure to load this before all the other start plugins.
+    config = function()
+      ---@diagnostic disable-next-line: missing-fields
+      require('onedark').setup {
+        styles = {
+          style = 'Warmer',
+        },
+      }
+      require('onedark').load()
+
+      -- Load the colorscheme here.
+      -- Like many other themes, this one has different styles, and you could load
+      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+      vim.cmd.colorscheme 'onedark'
     end,
   },
 
@@ -1056,29 +1061,6 @@ require('lazy').setup({
       -- Shows a signature help window while you type arguments for a function
       signature = { enabled = true },
     },
-  },
-
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'navarasu/onedark.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('onedark').setup {
-        styles = {
-          style = 'Warmer',
-        },
-      }
-      require('onedark').load()
-
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'onedark'
-    end,
   },
 
   -- Highlight todo, notes, etc in comments
