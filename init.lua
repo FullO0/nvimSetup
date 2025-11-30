@@ -197,8 +197,8 @@ vim.o.scrolloff = 15
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
--- Set width so that only 80 characters can appear as stated in CS244 project specs
-vim.o.textwidth = 80
+-- Set width the width of the screen
+vim.o.textwidth = 9999
 
 ------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------Keymaps---------------------------------------------------------
