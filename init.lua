@@ -413,19 +413,48 @@ require('lazy').setup({
     },
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+  ------------------------------------------------------COLORSCHEME-------------------------------------------------------
+
+  {
     'navarasu/onedark.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
-      ---@diagnostic disable-next-line: missing-fields
+      local ansi_onedark_warmer = {
+        black = '#121212', -- ANSI 233
+        bg0 = '#303030', -- ANSI 236 (Lighter/Vibrant Background)
+        bg1 = '#3a3a3a', -- ANSI 237
+        bg2 = '#444444', -- ANSI 238
+        bg3 = '#4e4e4e', -- ANSI 239
+        bg_d = '#1c1c1c', -- ANSI 234 (Darker background)
+        bg_blue = '#87d7ff', -- ANSI 117 (Ice Blue Background)
+        bg_yellow = '#ffd787', -- ANSI 222 (Light Gold Background)
+        fg = '#bcbcbc', -- ANSI 250 (Bright Grey Text)
+        purple = '#d787d7', -- ANSI 176 (Pinkish Purple)
+        green = '#87d787', -- ANSI 114 (Vibrant Mint Green)
+        orange = '#ffaf5f', -- ANSI 215 (Vibrant Orange)
+        blue = '#87d7ff', -- ANSI 117 (Ice Blue)
+        yellow = '#ffd787', -- ANSI 222 (Light Gold)
+        cyan = '#87d7d7', -- ANSI 116 (Light Cyan)
+        red = '#ff8787', -- ANSI 210 (Light Red)
+        grey = '#808080', -- ANSI 244
+        light_grey = '#a8a8a8', -- ANSI 248
+        dark_cyan = '#005f5f', -- ANSI 23
+        dark_red = '#875f5f', -- ANSI 95
+        dark_yellow = '#875f00', -- ANSI 94
+        dark_purple = '#875f87', -- ANSI 96
+        diff_add = '#303030', -- ANSI 236
+        diff_delete = '#303030', -- ANSI 236
+        diff_change = '#1c1c1c', -- ANSI 234
+        diff_text = '#008787', -- ANSI 30
+      }
+
       require('onedark').setup {
         styles = {
           style = 'Warmer',
         },
+
+        -- Override some colors to fit in with my terminal and tmux configuration
+        colors = ansi_onedark_warmer,
       }
       require('onedark').load()
 
@@ -435,6 +464,8 @@ require('lazy').setup({
       vim.cmd.colorscheme 'onedark'
     end,
   },
+
+  ------------------------------------------------------------------------------------------------------------------------
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
