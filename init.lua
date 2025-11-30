@@ -363,6 +363,18 @@ require('lazy').setup({
 
       -- Set tabline format
       vim.g.wintabs_show = 'buffers'
+
+      -- You can use hex codes or color names if your theme supports them.
+      vim.cmd [[
+        " The active buffer (Focused)
+        highlight WintabsActive guifg=#101012 guibg=#87d787
+
+        " The inactive buffers (Background)
+        highlight WintabsInactive guifg=#a99f90 guibg=#3a3a3a
+
+        " The arrow/separator color
+        highlight WintabsArrow guifg=#444444 guibg=#303030
+      ]]
     end,
   },
 
