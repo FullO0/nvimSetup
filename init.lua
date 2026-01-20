@@ -900,7 +900,7 @@ require('lazy').setup({
           filetypes = { 'c', 'h', 'cpp' },
         },
 
-        -- Python
+        -- Python  TODO: Change to the much faster basedPyright
         pyright = {},
 
         -- Rust
@@ -965,6 +965,19 @@ require('lazy').setup({
     end,
   },
 
+  -- FIXME: Can't find the VenvSelect command in python files
+  { -- Python Venv Selector
+    'linux-cultist/venv-selector.nvim',
+    dependencies = {
+      'neovim/nvim-lspconfig',
+      { 'nvim-telescope/telescope.nvim', branch = '0.1.x', dependencies = { 'nvim-lua/plenary.nvim' } },
+    },
+    ft = 'python',
+    keys = {
+      { '<leader>pvs', '<cmd>VenvSelect<cr>', desc = '[P]ython [V]env [S]elector' },
+    },
+  },
+
   { -- Autoformat
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
@@ -982,9 +995,6 @@ require('lazy').setup({
     opts = {
       notify_on_error = false,
       format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
         local disable_filetypes = { c = true, cpp = true }
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
@@ -1151,7 +1161,6 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
-    --  Configure Treesitter  See `:help nvim-treesitter`
     opts = {
       ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'python', 'java', 'rust' },
       -- Autoinstall languages that are not installed
