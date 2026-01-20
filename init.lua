@@ -768,8 +768,6 @@ require('lazy').setup({
           -- Jump to the implementation of the word under your cursor.
           --  Useful when your language has ways of declaring types without an actual implementation.
           map('gri', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-
-          -- Jump to the definition of the word under your cursor.
           --  This is where a variable was first declared, or where a function is defined, etc.
           --  To jump back, press <C-t>.
           map('grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
@@ -890,6 +888,8 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
+
+        -- C and C++
         clangd = {
           cmd = {
             'clangd',
@@ -897,20 +897,19 @@ require('lazy').setup({
             '--clang-tidy',
             '--std=c90',
           },
-          filetypes = { 'c', 'h' },
+          filetypes = { 'c', 'h', 'cpp' },
         },
-        -- gopls = {},
-        -- pyright = {},
-        -- rust_analyzer = {},
-        -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-        --
-        -- Some languages (like typescript) have entire language plugins that can be useful:
-        --    https://github.com/pmizio/typescript-tools.nvim
-        --
-        -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
-        --
 
+        -- Python
+        pyright = {},
+
+        -- Rust
+        rust_analyzer = {},
+
+        -- Java
+        jdtls = {},
+
+        -- Lua
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
@@ -920,8 +919,6 @@ require('lazy').setup({
               completion = {
                 callSnippet = 'Replace',
               },
-              -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
             },
           },
         },
@@ -942,9 +939,12 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'stylua',
-        'clangd',
-        'clang-format',
+        'stylua', -- Lua formatter
+        'clangd', -- C LSP
+        'clang-format', -- C formatter
+        'black', -- Python formatter
+        'isort', -- Pyton import sorter
+        'google-java-format', -- Java formatter
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -998,11 +998,9 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         c = { 'clang_format' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        python = { 'isort', 'black' },
+        java = { 'google-java-format' },
+        rust = { 'rustfmt', lsp_format = 'fallback' },
       },
     },
   },
@@ -1067,7 +1065,7 @@ require('lazy').setup({
         -- See :h blink-cmp-config-keymap for defining your own keymap
         preset = 'default',
 
-        -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
+        -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) ee:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
 
         ['<Tab>'] = { 'fallback' },
@@ -1150,13 +1148,14 @@ require('lazy').setup({
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
+
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
-    -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
+    --  Configure Treesitter  See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'python', 'java', 'rust' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
