@@ -1,5 +1,4 @@
 --[[
-
 =====================================================================
 =====================================================================
 ========                                    .-----.          ========
@@ -893,7 +892,6 @@ require('lazy').setup({
     end,
   },
 
-  -- FIXME: Can't find the VenvSelect command in python files
   { -- Python Venv Selector
     'linux-cultist/venv-selector.nvim',
     dependencies = {
@@ -901,6 +899,7 @@ require('lazy').setup({
       { 'nvim-telescope/telescope.nvim', branch = '0.1.x', dependencies = { 'nvim-lua/plenary.nvim' } },
     },
     ft = 'python',
+    opts = {},
     keys = {
       { '<leader>pvs', '<cmd>VenvSelect<cr>', desc = '[P]ython [V]env [S]elector' },
     },
