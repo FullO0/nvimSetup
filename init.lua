@@ -827,7 +827,7 @@ require('lazy').setup({
         },
 
         -- Python
-        basedpyright = {},
+        ty = {},
 
         -- Rust
         rust_analyzer = {},
@@ -863,10 +863,8 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Lua formatter
-        'clangd', -- C LSP
         'clang-format', -- C formatter
-        'black', -- Python formatter
-        'isort', -- Pyton import sorter
+        'ruff', -- Python formatter
         'google-java-format', -- Java formatter
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
