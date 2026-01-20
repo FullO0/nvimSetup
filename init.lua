@@ -824,11 +824,10 @@ require('lazy').setup({
             '--clang-tidy',
             '--std=c90',
           },
-          filetypes = { 'c', 'h', 'cpp' },
         },
 
-        -- Python  TODO: Change to the much faster basedPyright
-        pyright = {},
+        -- Python
+        basedpyright = {},
 
         -- Rust
         rust_analyzer = {},
@@ -838,9 +837,6 @@ require('lazy').setup({
 
         -- Lua
         lua_ls = {
-          -- cmd = { ... },
-          -- filetypes = { ... },
-          -- capabilities = {},
           settings = {
             Lua = {
               completion = {
