@@ -6,7 +6,7 @@
 ========         |.-""""""""""""""""""-.|   |-----|          ========
 ========         ||                    ||   | === |          ========
 ========         ||        NVIM        ||   |-----|          ========
-========         ||      v0.11.3       ||   | === |          ========
+========         ||      v0.11.5       ||   | === |          ========
 ========         ||                    ||   |-----|          ========
 ========         ||                    ||   |:::::|          ========
 ========         |'-..................-'|   |____o|          ========
@@ -955,15 +955,12 @@ require('lazy').setup({
           return 'make install_jsregexp'
         end)(),
         dependencies = {
-          -- `friendly-snippets` contains a variety of premade snippets.
-          --    See the README about individual language/framework/plugin snippets:
-          --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
         opts = {},
       },
@@ -998,9 +995,8 @@ require('lazy').setup({
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) ee:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
-
-        ['<Tab>'] = { 'fallback' },
-        ['<S-Tab>'] = { 'fallback' },
+        ['<Tab>'] = { 'snippet_forward', 'select_next' },
+        ['<S-Tab>'] = { 'snippet_backward', 'select_prev' },
       },
 
       appearance = {
