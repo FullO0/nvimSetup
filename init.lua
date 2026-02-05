@@ -995,8 +995,23 @@ require('lazy').setup({
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) ee:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
-        ['<Tab>'] = { 'select_next', 'fallback' },
-        ['<S-Tab>'] = { 'select_prev', 'fallback' },
+        ['<Tab>'] = {
+          function(cmp)
+            if cmp.is_menu_visible() then
+              return cmp.select_next()
+            end
+          end,
+          'fallback',
+        },
+
+        ['<S-Tab>'] = {
+          function(cmp)
+            if cmp.is_menu_visible() then
+              return cmp.select_prev()
+            end
+          end,
+          'fallback',
+        },
 
         ['<C-l>'] = { 'snippet_forward', 'fallback' },
         ['<C-h>'] = { 'snippet_backward', 'fallback' },
