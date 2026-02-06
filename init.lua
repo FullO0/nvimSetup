@@ -346,33 +346,37 @@ require('lazy').setup({
     'navarasu/onedark.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
-      local ansi_onedark_warmer = {
-        black = '#121212', -- ANSI 233
-        bg0 = '#303030', -- ANSI 236 (Lighter/Vibrant Background)
-        bg1 = '#3a3a3a', -- ANSI 237
-        bg2 = '#444444', -- ANSI 238
-        bg3 = '#4e4e4e', -- ANSI 239
-        bg_d = '#1c1c1c', -- ANSI 234 (Darker background)
-        bg_blue = '#87d7ff', -- ANSI 117 (Ice Blue Background)
-        bg_yellow = '#ffd787', -- ANSI 222 (Light Gold Background)
-        fg = '#bcbcbc', -- ANSI 250 (Bright Grey Text)
-        purple = '#d787d7', -- ANSI 176 (Pinkish Purple)
-        green = '#87d787', -- ANSI 114 (Vibrant Mint Green)
-        orange = '#ffaf5f', -- ANSI 215 (Vibrant Orange)
-        blue = '#87d7ff', -- ANSI 117 (Ice Blue)
-        yellow = '#ffd787', -- ANSI 222 (Light Gold)
-        cyan = '#87d7d7', -- ANSI 116 (Light Cyan)
-        red = '#ff8787', -- ANSI 210 (Light Red)
-        grey = '#808080', -- ANSI 244
-        light_grey = '#a8a8a8', -- ANSI 248
-        dark_cyan = '#005f5f', -- ANSI 23
-        dark_red = '#875f5f', -- ANSI 95
-        dark_yellow = '#875f00', -- ANSI 94
-        dark_purple = '#875f87', -- ANSI 96
-        diff_add = '#303030', -- ANSI 236
-        diff_delete = '#303030', -- ANSI 236
-        diff_change = '#1c1c1c', -- ANSI 234
-        diff_text = '#008787', -- ANSI 30
+      local status, c = pcall(require, 'custom.generated_colors')
+      if not status then
+        c = {}
+      end
+      local custom_colors = {
+        black = c.black,
+        bg0 = c.bg0,
+        bg1 = c.bg1,
+        bg2 = c.bg2,
+        bg3 = c.bg3,
+        bg_d = c.bg_d,
+        bg_blue = c.bg_blue,
+        bg_yellow = c.bg_yellow,
+        fg = c.fg,
+        purple = c.purple,
+        green = c.green0,
+        orange = c.orange,
+        blue = c.blue,
+        yellow = c.yellow,
+        cyan = c.cyan,
+        red = c.red,
+        grey = c.grey,
+        light_grey = c.light_grey,
+        dark_cyan = c.dark_cyan,
+        dark_red = c.dark_red,
+        dark_yellow = c.dark_yellow,
+        dark_purple = c.dark_purple,
+        diff_add = c.diff_add,
+        diff_delete = c.diff_delete,
+        diff_change = c.diff_change,
+        diff_text = c.diff_text,
       }
 
       require('onedark').setup {
@@ -381,7 +385,7 @@ require('lazy').setup({
         },
 
         -- Override some colors to fit in with my terminal and tmux configuration
-        colors = ansi_onedark_warmer,
+        colors = custom_colors,
       }
       require('onedark').load()
 
