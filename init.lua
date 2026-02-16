@@ -283,9 +283,13 @@ rtp:prepend(lazypath)
 ---------------------------------------------Configure and install plugins----------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
 
---  To check the current status of your plugins, run
---    :Lazy
---
+--- Custom colors ---
+local status, c = pcall(require, 'custom.generated_colors')
+if not status then
+  c = {}
+end
+
+--- Lazy ---
 require('lazy').setup({
 
   -- TODO: Get rainbow-delimiters or something like it
@@ -302,18 +306,10 @@ require('lazy').setup({
       -- Set tabline format
       vim.g.wintabs_show = 'buffers'
 
-      -- TODO: make this dynamic with my master colors.toml file
-      -- Set my custom colors
-      vim.cmd [[
-        " The active buffer (Focused)
-        highlight WintabsActive guifg=#101012 guibg=#87d787
-
-        " The inactive buffers (Background)
-        highlight WintabsInactive guifg=#a99f90 guibg=#3a3a3a
-
-        " The arrow/separator color
-        highlight WintabsArrow guifg=#444444 guibg=#303030
-      ]]
+      -- Custom colors
+      vim.api.nvim_set_hl(0, 'WintabsActive', { fg = c.black, bg = c.green0 })
+      vim.api.nvim_set_hl(0, 'WintabsInactive', { fg = c.light_grey, bg = c.bg1 })
+      vim.api.nvim_set_hl(0, 'WintabsArrow', { fg = c.light_grey, bg = c.bg1 })
     end,
   },
 
@@ -358,10 +354,6 @@ require('lazy').setup({
     'navarasu/onedark.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
-      local status, c = pcall(require, 'custom.generated_colors')
-      if not status then
-        c = {}
-      end
       local custom_colors = {
         black = c.black,
         bg0 = c.bg0,
@@ -1110,7 +1102,6 @@ require('lazy').setup({
         'python',
         'java',
         'rust',
-        'makefile',
         'cmake',
       },
       -- Autoinstall languages that are not installed
