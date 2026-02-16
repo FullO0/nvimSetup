@@ -830,7 +830,6 @@ require('lazy').setup({
             'clangd',
             '--background-index',
             '--clang-tidy',
-            '--std=c90',
           },
         },
 
