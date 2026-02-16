@@ -249,6 +249,17 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
   end,
 })
 
+-- Makefile specific settings
+vim.api.nvim_create_autocmd({ 'FileType' }, {
+  pattern = { 'make' },
+  callback = function()
+    vim.opt_local.expandtab = false
+    vim.opt_local.tabstop = 4
+    vim.opt_local.shiftwidth = 4
+    vim.opt_local.softtabstop = 0
+  end,
+})
+
 ------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------Lazy Autoinstall----------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
@@ -291,6 +302,7 @@ require('lazy').setup({
       -- Set tabline format
       vim.g.wintabs_show = 'buffers'
 
+      -- TODO: make this dynamic with my master colors.toml file
       -- Set my custom colors
       vim.cmd [[
         " The active buffer (Focused)
@@ -839,6 +851,9 @@ require('lazy').setup({
         -- Java
         jdtls = {},
 
+        -- Makefile
+        cmake = {},
+
         -- Lua
         lua_ls = {
           settings = {
@@ -936,6 +951,7 @@ require('lazy').setup({
         python = { 'isort', 'black' },
         java = { 'google-java-format' },
         rust = { 'rustfmt', lsp_format = 'fallback' },
+        make = { 'trim_whitespace' },
       },
     },
   },
@@ -1079,7 +1095,24 @@ require('lazy').setup({
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'python', 'java', 'rust' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        'python',
+        'java',
+        'rust',
+        'makefile',
+        'cmake',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -1109,7 +1142,6 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
