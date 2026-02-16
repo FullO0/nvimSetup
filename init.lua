@@ -853,6 +853,14 @@ require('lazy').setup({
               completion = {
                 callSnippet = 'Replace',
               },
+              workspace = {
+                checkThirdParty = false,
+                ignoreDir = { '/lua' },
+              },
+              runtime = {
+                version = 'LuaJIT',
+                pathStrict = false,
+              },
             },
           },
         },
@@ -883,17 +891,30 @@ require('lazy').setup({
       require('mason-lspconfig').setup {
         ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
         automatic_installation = false,
-        handlers = {
-          function(server_name)
-            local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for ts_ls)
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
-          end,
-        },
       }
+
+      -- Loop through the servers table and set them up natively
+      for server_name, server_config in pairs(servers) do
+        -- Inject your blink.cmp capabilities
+        server_config.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server_config.capabilities or {})
+
+        -- Polyfill for Astral's 'ty' server
+        -- It's so new that nvim-lspconfig doesn't have defaults for it yet!
+        if server_name == 'ty' then
+          server_config.cmd = server_config.cmd or { 'ty', 'server' }
+          server_config.filetypes = server_config.filetypes or { 'python' }
+          server_config.root_markers = server_config.root_markers or { 'ty.toml', 'pyproject.toml', '.git' }
+        end
+
+        -- Use Neovim 0.11 native LSP API
+        if vim.fn.has 'nvim-0.11' == 1 then
+          vim.lsp.config(server_name, server_config)
+          vim.lsp.enable(server_name)
+        else
+          -- Fallback for Neovim 0.10
+          require('lspconfig')[server_name].setup(server_config)
+        end
+      end
     end,
   },
 
