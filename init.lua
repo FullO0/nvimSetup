@@ -881,10 +881,18 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
+
+        -- Formatters
         'stylua', -- Lua formatter
         'clang-format', -- C formatter
         'ruff', -- Python formatter
         'google-java-format', -- Java formatter
+
+        -- Linters
+        -- cppcheck C linter (Installed through OS)
+        'checkstyle', -- Java linter
+        'checkmake', -- Makefile linter
+        'shellcheck', -- Bash linter
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -915,6 +923,31 @@ require('lazy').setup({
           require('lspconfig')[server_name].setup(server_config)
         end
       end
+    end,
+  },
+
+  { -- Linting
+    'mfussenegger/nvim-lint',
+    event = { 'BufReadPre', 'BufNewFile' },
+    config = function()
+      local lint = require 'lint'
+      lint.linters_by_ft = {
+        makefile = { 'checkmake' },
+        bash = { 'shellcheck' },
+        c = { 'cppcheck' },
+        python = { 'ruff' },
+        java = { 'checkstyle' },
+      }
+
+      local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
+      vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
+        group = lint_augroup,
+        callback = function()
+          if vim.bo.modifiable then
+            lint.try_lint()
+          end
+        end,
+      })
     end,
   },
 
@@ -1154,7 +1187,6 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   require 'kickstart.plugins.debug',
-  require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
