@@ -845,6 +845,9 @@ require('lazy').setup({
         -- Makefile
         cmake = {},
 
+        -- Bash
+        bashls = {},
+
         -- Lua
         lua_ls = {
           settings = {
@@ -886,6 +889,7 @@ require('lazy').setup({
         'clang-format', -- C formatter
         'ruff', -- Python formatter
         'google-java-format', -- Java formatter
+        'shfmt', -- Bash formatter
 
         -- Linters
         -- cppcheck C linter (Installed through OS)
@@ -933,7 +937,8 @@ require('lazy').setup({
       lint.linters_by_ft = {
         makefile = { 'checkmake' },
         bash = { 'shellcheck' },
-        c = { 'cppcheck' },
+        sh = { 'shellcheck' },
+        -- c = { 'cppcheck' }, Temp until I get to automating downloading cppcheck
         python = { 'ruff' },
         java = { 'checkstyle' },
       }
@@ -997,6 +1002,7 @@ require('lazy').setup({
         java = { 'google-java-format' },
         rust = { 'rustfmt', lsp_format = 'fallback' },
         make = { 'trim_whitespace' },
+        bash = { 'shmft' },
       },
     },
   },
