@@ -1204,6 +1204,7 @@ require('lazy').setup({
         'java',
         'rust',
         'cmake',
+        'yaml',
       },
       -- Autoinstall languages that are not installed
       auto_install = true,
