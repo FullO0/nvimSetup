@@ -515,36 +515,50 @@ require('lazy').setup({
       'stevearc/dressing.nvim',
     },
 
+    lazy = false,
+
     keys = {
-      { '<leader>cc', '<cmd>CodeCompanionChat Toggle<cr>', desc = '[C]odeCompanion [C]hat' },
-      { '<leader>ca', '<cmd>CodeCompanionAction<cr>', desc = '[C]odeCompanion [A]ction' },
-      { '<leader>ga', '<cmd>CodeCompanionChat Add', mode = 'v', desc = 'Add selection to CodeCompanion' },
+      { '<leader>ccc', '<cmd>CodeCompanionChat Toggle<cr>', desc = '[C]ode[C]ompanion [C]hat' },
+      { '<leader>ccp', '<cmd>CodeCompanion<cr>', desc = '[C]ode[C]ompanion [P]rompt' },
+      { '<leader>cca', '<cmd>CodeCompanionActions<cr>', desc = '[C]ode[C]ompanion [A]ction' },
+      { '<leader>ccga', '<cmd>CodeCompanionChat Add', mode = 'v', desc = '[C]ode[C]ompanion [G]rap [A]dd Code to Chat' },
     },
 
-    opts = {
+    config = function()
+      vim.notify 'CodeCompanion Setup started'
+      require('codecompanion').setup {
+        log_level = 'DEBUG',
 
-      log_level = 'DEBUG', -- or "TRACE"
+        strategies = {
+          chat = { adapter = 'ollama' },
+          inline = { adapter = 'ollama' },
+          agent = { adapter = 'ollama' },
+        },
 
-      strategies = {
-        chat = { adapter = 'gemini' },
-        inline = { adapter = 'gemini' },
-        agent = { adapter = 'gemini' },
-      },
+        -- Diffrent AI models
+        adapters = {
 
-      -- Diffrent AI models
-      adapters = {
+          -- FIXME: Gemini Adapter STUPID STUPDJIDSOFSDOIF:NSD IFUBSIUSRDVPIUB
+          gemini = function()
+            return require('codecompanion.adapters').extend('gemini', {
+              env = { api_key = os.getenv 'API_KEY_GEMINI' },
+              schema = {
+                model = { default = 'gemini-1.5-flash' },
+              },
+            })
+          end,
 
-        -- Gemini Adpater
-        gemini = function()
-          return require('codecompanion.adapters').extend('gemini', {
-            env = { api_key = 'cmd:echo $API_KEY_GEMINI' },
-            schema = {
-              model = { default = 'gemini-3.1-pro-preview' },
-            },
-          })
-        end,
-      },
-    },
+          -- Ollama Adapter
+          ollama = function()
+            return require('codecompanion.adapters').extend('ollama', {
+              schema = {
+                model = { default = 'llama3.1' },
+              },
+            })
+          end,
+        },
+      }
+    end,
   },
 
   { -- Supermaven
