@@ -505,6 +505,21 @@ require('lazy').setup({
     },
   },
 
+  -------------------------------------------------------AI plugins-------------------------------------------------------
+
+  { -- Supermaven
+    'supermaven-inc/supermaven-nvim',
+    config = function()
+      require('supermaven-nvim').setup {
+        keymaps = {
+          accept_suggestion = '<Tab>',
+          clear_suggestion = '<S-Tab>',
+          acceep_word = '<C-j>',
+        },
+      }
+    end,
+  },
+
   -- NOTE: Plugins can specify dependencies.
   --
   -- The dependencies are proper plugin specifications as well - anything
@@ -1066,23 +1081,10 @@ require('lazy').setup({
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) ee:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
-        ['<Tab>'] = {
-          function(cmp)
-            if cmp.is_menu_visible() then
-              return cmp.select_next()
-            end
-          end,
-          'fallback',
-        },
 
-        ['<S-Tab>'] = {
-          function(cmp)
-            if cmp.is_menu_visible() then
-              return cmp.select_prev()
-            end
-          end,
-          'fallback',
-        },
+        -- Disable default mappings
+        ['<Tab>'] = {},
+        ['<S-Tab>'] = {},
 
         ['<C-l>'] = { 'snippet_forward', 'fallback' },
         ['<C-h>'] = { 'snippet_backward', 'fallback' },
