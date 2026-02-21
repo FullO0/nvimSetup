@@ -507,6 +507,46 @@ require('lazy').setup({
 
   -------------------------------------------------------AI plugins-------------------------------------------------------
 
+  { -- CodeCompanion
+    'olimorris/codecompanion.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-treesitter/nvim-treesitter',
+      'stevearc/dressing.nvim',
+    },
+
+    keys = {
+      { '<leader>cc', '<cmd>CodeCompanionChat Toggle<cr>', desc = '[C]odeCompanion [C]hat' },
+      { '<leader>ca', '<cmd>CodeCompanionAction<cr>', desc = '[C]odeCompanion [A]ction' },
+      { '<leader>ga', '<cmd>CodeCompanionChat Add', mode = 'v', desc = 'Add selection to CodeCompanion' },
+    },
+
+    opts = {
+
+      log_level = 'DEBUG', -- or "TRACE"
+
+      strategies = {
+        chat = { adapter = 'gemini' },
+        inline = { adapter = 'gemini' },
+        agent = { adapter = 'gemini' },
+      },
+
+      -- Diffrent AI models
+      adapters = {
+
+        -- Gemini Adpater
+        gemini = function()
+          return require('codecompanion.adapters').extend('gemini', {
+            env = { api_key = 'cmd:echo $API_KEY_GEMINI' },
+            schema = {
+              model = { default = 'gemini-3.1-pro-preview' },
+            },
+          })
+        end,
+      },
+    },
+  },
+
   { -- Supermaven
     'supermaven-inc/supermaven-nvim',
     config = function()
