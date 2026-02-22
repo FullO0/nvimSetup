@@ -507,58 +507,61 @@ require('lazy').setup({
 
   -------------------------------------------------------AI plugins-------------------------------------------------------
 
+  {
+    'zbirenbaum/copilot.lua',
+    cmd = 'Copilot',
+    even = 'InsertEnter',
+    config = function()
+      require('copilot').setup {
+        suggestion = { enabled = false },
+        panel = { enabled = false },
+      }
+    end,
+  },
+
   { -- CodeCompanion
     'olimorris/codecompanion.nvim',
     dependencies = {
       'nvim-lua/plenary.nvim',
       'nvim-treesitter/nvim-treesitter',
       'stevearc/dressing.nvim',
+      'zbirenbaum/copilot.lua',
     },
 
-    lazy = false,
-
+    -- Keymaps
     keys = {
       { '<leader>ccc', '<cmd>CodeCompanionChat Toggle<cr>', desc = '[C]ode[C]ompanion [C]hat' },
       { '<leader>ccp', '<cmd>CodeCompanion<cr>', desc = '[C]ode[C]ompanion [P]rompt' },
       { '<leader>cca', '<cmd>CodeCompanionActions<cr>', desc = '[C]ode[C]ompanion [A]ction' },
-      { '<leader>ccga', '<cmd>CodeCompanionChat Add', mode = 'v', desc = '[C]ode[C]ompanion [G]rap [A]dd Code to Chat' },
+      { '<leader>ccC', '<cmd>CodeCompanionCmd<cr>', desc = '[C]ode[C]ompanion [C]md' },
+      { '<leader>ccga', '<cmd>CodeCompanionChat Add<cr>', mode = 'v', desc = '[C]ode[C]ompanion [G]rap [A]dd Code to Chat' },
     },
 
-    config = function()
-      vim.notify 'CodeCompanion Setup started'
-      require('codecompanion').setup {
+    opts = {
+      opts = {
         log_level = 'DEBUG',
+      },
 
-        strategies = {
-          chat = { adapter = 'ollama' },
-          inline = { adapter = 'ollama' },
-          agent = { adapter = 'ollama' },
+      -- Diffrent models for different interactions
+      interactions = {
+        chat = {
+          adapter = 'copilot',
         },
-
-        -- Diffrent AI models
-        adapters = {
-
-          -- FIXME: Gemini Adapter STUPID STUPDJIDSOFSDOIF:NSD IFUBSIUSRDVPIUB
-          gemini = function()
-            return require('codecompanion.adapters').extend('gemini', {
-              env = { api_key = os.getenv 'API_KEY_GEMINI' },
-              schema = {
-                model = { default = 'gemini-1.5-flash' },
-              },
-            })
-          end,
-
-          -- Ollama Adapter
-          ollama = function()
-            return require('codecompanion.adapters').extend('ollama', {
-              schema = {
-                model = { default = 'llama3.1' },
-              },
-            })
-          end,
+        inline = {
+          adapter = 'copilot',
         },
-      }
-    end,
+        cmd = {
+          adapter = 'ollama',
+          model = 'llama3.1',
+        },
+        background = {
+          adapter = {
+            name = 'ollama',
+            model = 'llama3.1',
+          },
+        },
+      },
+    },
   },
 
   { -- Supermaven
