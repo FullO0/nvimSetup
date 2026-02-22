@@ -524,7 +524,7 @@ require('lazy').setup({
     dependencies = {
       'nvim-lua/plenary.nvim',
       'nvim-treesitter/nvim-treesitter',
-      'stevearc/dressing.nvim',
+      'nvim-telescope/telescope.nvim',
       'zbirenbaum/copilot.lua',
     },
 
@@ -542,23 +542,37 @@ require('lazy').setup({
         log_level = 'DEBUG',
       },
 
-      -- Diffrent models for different interactions
       interactions = {
         chat = {
           adapter = 'copilot',
+          opts = { completion_provider = 'blink' },
+          slash_commands = {
+            ['buffer'] = { opts = { contains_code = true } },
+            ['file'] = { opts = { contains_code = true } },
+          },
         },
+
         inline = {
           adapter = 'copilot',
         },
+
         cmd = {
           adapter = 'ollama',
           model = 'llama3.1',
         },
+
         background = {
           adapter = {
             name = 'ollama',
             model = 'llama3.1',
           },
+        },
+      },
+
+      display = {
+        chat = {
+          show_context = true,
+          fold_context = false,
         },
       },
     },
@@ -1160,9 +1174,10 @@ require('lazy').setup({
       },
 
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'lazydev' },
+        default = { 'lsp', 'path', 'snippets', 'lazydev', 'codecompanion' },
         providers = {
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
+          codecompanion = { module = 'codecompanion.providers.completion.blink', enabled = true },
         },
       },
 
