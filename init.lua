@@ -294,6 +294,14 @@ require('lazy').setup({
 
   -- TODO: Get rainbow-delimiters or something like it
 
+  { -- Add indentation guides even on blank lines
+    'lukas-reineke/indent-blankline.nvim',
+    -- Enable \`lukas-reineke/indent-blankline.nvim\`
+    -- See \`:help ibl\`
+    main = 'ibl',
+    opts = {},
+  },
+
   -- Vim window tabs plugin
   {
     'zefei/vim-wintabs',
