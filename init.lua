@@ -510,10 +510,10 @@ require('lazy').setup({
   {
     'zbirenbaum/copilot.lua',
     cmd = 'Copilot',
-    even = 'InsertEnter',
+    event = 'InsertEnter',
     config = function()
       require('copilot').setup {
-        suggestion = { enabled = false },
+        suggestion = { enabled = true, auto_trigger = true },
         panel = { enabled = false },
       }
     end,
@@ -576,19 +576,6 @@ require('lazy').setup({
         },
       },
     },
-  },
-
-  { -- Supermaven
-    'supermaven-inc/supermaven-nvim',
-    config = function()
-      require('supermaven-nvim').setup {
-        keymaps = {
-          accept_suggestion = '<Tab>',
-          clear_suggestion = '<S-Tab>',
-          acceep_word = '<C-j>',
-        },
-      }
-    end,
   },
 
   -- NOTE: Plugins can specify dependencies.
