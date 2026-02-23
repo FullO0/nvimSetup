@@ -569,6 +569,12 @@ require('lazy').setup({
 
   {
     'zbirenbaum/copilot.lua',
+
+    -- Disable every AI plugin if NVIM_NO_AI is set in the environment
+    enabled = function()
+      return not os.getenv 'NVIM_NO_AI'
+    end,
+
     cmd = 'Copilot',
     event = 'InsertEnter',
     config = function()
@@ -598,6 +604,11 @@ require('lazy').setup({
       'nvim-telescope/telescope.nvim',
       'zbirenbaum/copilot.lua',
     },
+
+    -- Disable every AI plugin if NVIM_NO_AI is set in the environment
+    enabled = function()
+      return not os.getenv 'NVIM_NO_AI'
+    end,
 
     -- Keymaps
     keys = {
