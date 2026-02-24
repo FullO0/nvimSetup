@@ -289,6 +289,16 @@ if not status then
   c = {}
 end
 
+-- Disable ai options
+-- Variable for no ai
+local ai_disabled = os.getenv 'NVIM_NO_AI' ~= nil
+
+-- Blink providers
+default_sources = { 'lsp', 'path', 'snippets', 'lazydev' }
+if not ai_disabled then
+  table.insert(default_sources, 'codecompanion')
+end
+
 --- Lazy ---
 require('lazy').setup({
 
@@ -572,7 +582,7 @@ require('lazy').setup({
 
     -- Disable every AI plugin if NVIM_NO_AI is set in the environment
     enabled = function()
-      return not os.getenv 'NVIM_NO_AI'
+      return not ai_disabled
     end,
 
     cmd = 'Copilot',
@@ -607,7 +617,7 @@ require('lazy').setup({
 
     -- Disable every AI plugin if NVIM_NO_AI is set in the environment
     enabled = function()
-      return not os.getenv 'NVIM_NO_AI'
+      return not ai_disabled
     end,
 
     -- Keymaps
@@ -1245,7 +1255,7 @@ require('lazy').setup({
       },
 
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'lazydev', 'codecompanion' },
+        default = default_sources,
         providers = {
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
           codecompanion = { module = 'codecompanion.providers.completion.blink', enabled = true },
