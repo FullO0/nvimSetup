@@ -209,10 +209,12 @@ vim.api.nvim_create_autocmd({ 'FileType' }, {
 vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
   pattern = { '*.c', '*.h' },
   callback = function()
-    vim.opt_local.tabstop = 4
-    vim.opt_local.shiftwidth = 4
-    vim.opt_local.expandtab = false
-    vim.opt_local.textwidth = 80
+    if not vim.b.editorconfig or vim.tbl_isempty(vim.b.editorconfig) then
+      vim.opt_local.tabstop = 4
+      vim.opt_local.shiftwidth = 4
+      vim.opt_local.expandtab = false
+      vim.opt_local.textwidth = 80
+    end
   end,
 })
 
@@ -220,10 +222,12 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
 vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
   pattern = { '*.asm' },
   callback = function()
-    vim.opt_local.tabstop = 2
-    vim.opt_local.shiftwidth = 2
-    vim.opt_local.expandtab = true
-    vim.opt_local.textwidth = 80
+    if not vim.b.editorconfig or vim.tbl_isempty(vim.b.editorconfig) then
+      vim.opt_local.tabstop = 2
+      vim.opt_local.shiftwidth = 2
+      vim.opt_local.expandtab = true
+      vim.opt_local.textwidth = 80
+    end
   end,
 })
 
@@ -231,10 +235,12 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
 vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
   pattern = { '*.lua' },
   callback = function()
-    vim.opt_local.tabstop = 2
-    vim.opt_local.shiftwidth = 2
-    vim.opt_local.expandtab = true
-    vim.opt_local.textwidth = 120
+    if not vim.b.editorconfig or vim.tbl_isempty(vim.b.editorconfig) then
+      vim.opt_local.tabstop = 2
+      vim.opt_local.shiftwidth = 2
+      vim.opt_local.expandtab = true
+      vim.opt_local.textwidth = 120
+    end
   end,
 })
 
@@ -242,10 +248,12 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
 vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
   pattern = { '*.py' },
   callback = function()
-    vim.opt_local.tabstop = 4
-    vim.opt_local.shiftwidth = 4
-    vim.opt_local.expandtab = true
-    vim.opt_local.textwidth = 120
+    if not vim.b.editorconfig or vim.tbl_isempty(vim.b.editorconfig) then
+      vim.opt_local.tabstop = 4
+      vim.opt_local.shiftwidth = 4
+      vim.opt_local.expandtab = true
+      vim.opt_local.textwidth = 120
+    end
   end,
 })
 
