@@ -289,14 +289,21 @@ if not status then
   c = {}
 end
 
--- Disable ai options
--- Variable for no ai
+-- Disable ai plugins
 local ai_disabled = os.getenv 'NVIM_NO_AI' ~= nil
 
+-- Disable LSP plugins
+local lsp_disabled = os.getenv 'NVIM_NO_LSP' ~= nil
+
 -- Blink providers
-default_sources = { 'lsp', 'path', 'snippets', 'lazydev' }
+local default_sources = { 'path' }
 if not ai_disabled then
   table.insert(default_sources, 'codecompanion')
+end
+if not lsp_disabled then
+  table.insert(default_sources, 'lsp')
+  table.insert(default_sources, 'snippets')
+  table.insert(default_sources, 'lazydev')
 end
 
 --- Lazy ---
@@ -813,6 +820,9 @@ require('lazy').setup({
       -- Allows extra capabilities provided by blink.cmp
       'saghen/blink.cmp',
     },
+    enabled = function()
+      return not lsp_disabled
+    end,
     config = function()
       -- Brief aside: **What is LSP?**
       --
@@ -1073,6 +1083,9 @@ require('lazy').setup({
 
       -- Loop through the servers table and set them up natively
       for server_name, server_config in pairs(servers) do
+        if not lsp_disabled then
+          break
+        end
         -- Inject your blink.cmp capabilities
         server_config.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server_config.capabilities or {})
 
