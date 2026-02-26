@@ -362,13 +362,21 @@ require('lazy').setup({
                 'table_constructor',
                 'field',
               },
+              c = {
+                'case_statement',
+                'compound_statement',
+                'initializer_list',
+                'enumerator_list',
+                'field_declaration_list',
+                'parameter_list',
+              },
               python = {
                 'dictionary',
                 'list',
                 'set',
                 'tuple',
-                'parenthesized_expression', -- Catches deep logic in ()
-                'argument_list', -- Catches multiline function calls
+                'parenthesized_expression',
+                'argument_list',
                 'dictionary_comprehension',
                 'list_comprehension',
               },
