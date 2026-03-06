@@ -164,10 +164,10 @@ vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
 --  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('n', '<leader>wH', '<C-w><C-h>', { desc = '[W]indow [h] left' })
+vim.keymap.set('n', '<leader>wL', '<C-w><C-l>', { desc = '[W]indow [l] right' })
+vim.keymap.set('n', '<leader>wJ', '<C-w><C-j>', { desc = '[W]indow [j] down' })
+vim.keymap.set('n', '<leader>wK', '<C-w><C-k>', { desc = '[W]indow [k] up' })
 
 ------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------Basic Autocommands---------------------------------------------------
@@ -594,6 +594,7 @@ require('lazy').setup({
         { '<leader>f', group = '[F]ormat Buffer' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>w', group = '[W]indows', mode = { 'n' } },
       },
     },
   },
@@ -611,17 +612,16 @@ require('lazy').setup({
     cmd = 'Copilot',
     event = 'InsertEnter',
     config = function()
+      vim.keymap.set('n', '<leader>cpt', '<cmd>Copilot toggle<cr>', { desc = '[C]o[P]ilot [T]oggle' })
       require('copilot').setup {
         suggestion = {
           enabled = true,
           auto_trigger = true,
           keymap = {
-            accept = '<C-;>',
-            accept_word = '<C-Right>',
-            accept_line = '<C-Down>',
-            next = '<M-]>',
-            prev = '<M-[>',
-            dismiss = '<C-]>',
+            accept = '<C-l>',
+            accept_word = '<C-k>',
+            accept_line = '<C-j>',
+            dismiss = '<C-h>',
           },
         },
         panel = { enabled = false },
@@ -1266,9 +1266,6 @@ require('lazy').setup({
         -- Disable default mappings
         ['<Tab>'] = {},
         ['<S-Tab>'] = {},
-
-        ['<C-l>'] = { 'snippet_forward', 'fallback' },
-        ['<C-h>'] = { 'snippet_backward', 'fallback' },
       },
 
       appearance = {
