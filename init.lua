@@ -319,6 +319,17 @@ require('lazy').setup({
 
   -- TODO: Get rainbow-delimiters or something like it
 
+  {
+    'kevinhwang91/nvim-ufo',
+    dependencies = 'kevinhwang91/promise-async',
+    config = function()
+      vim.o.foldlevel = 99
+      vim.o.foldlevelstart = 99
+      vim.o.foldenable = true
+      require('ufo').setup()
+    end,
+  },
+
   { -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
     main = 'ibl',
