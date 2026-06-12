@@ -23,28 +23,6 @@
 -------------------------------------------------------Functions--------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
 
--- TODO: Make this more diverse, maby even a plugin
--- Pads a line in nvim with dashes
-local function pad_line_with_dashes()
-  local line = vim.api.nvim_get_current_line()
-  local width = vim.o.textwidth
-  if width == 0 then
-    width = 80
-  end -- fallback if textwidth not set
-
-  local len = #line
-  if len >= width then
-    return
-  end -- do nothing if line is already longer
-
-  local total_dashes = width - len
-  local left = math.floor(total_dashes / 2)
-  local right = math.ceil(total_dashes / 2)
-
-  local new_line = string.rep('-', left) .. line .. string.rep('-', right)
-  vim.api.nvim_set_current_line(new_line)
-end
-
 ------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------Vim Options-------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
@@ -144,9 +122,6 @@ vim.keymap.set('n', '<leader>d', ':NvimTreeToggle<CR>', { noremap = true, silent
 -- Swap 'a' and 'A' behavior
 vim.keymap.set('n', 'a', 'A', { noremap = true, silent = true })
 vim.keymap.set('n', 'A', 'a', { noremap = true, silent = true })
-
--- Pad line with dashes command
-vim.keymap.set('n', '<leader>pl-', pad_line_with_dashes, { noremap = true, silent = true, desc = '[P]ad [L]ine [-]' })
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
@@ -852,28 +827,6 @@ require('lazy').setup({
       return not lsp_disabled
     end,
     config = function()
-      -- Brief aside: **What is LSP?**
-      --
-      -- LSP is an initialism you've probably heard, but might not understand what it is.
-      --
-      -- LSP stands for Language Server Protocol. It's a protocol that helps editors
-      -- and language tooling communicate in a standardized fashion.
-      --
-      -- In general, you have a "server" which is some tool built to understand a particular
-      -- language (such as `gopls`, `lua_ls`, `rust_analyzer`, etc.). These Language Servers
-      -- (sometimes called LSP servers, but that's kind of like ATM Machine) are standalone
-      -- processes that communicate with some "client" - in this case, Neovim!
-      --
-      -- LSP provides Neovim with features like:
-      --  - Go to definition
-      --  - Find references
-      --  - Autocompletion
-      --  - Symbol Search
-      --  - and more!
-      --
-      -- Thus, Language Servers are external tools that must be installed separately from
-      -- Neovim. This is where `mason` and related plugins come into play.
-      --
       -- If you're wondering about lsp vs treesitter, you can check out the wonderfully
       -- and elegantly composed help section, `:help lsp-vs-treesitter`
 
@@ -1018,15 +971,7 @@ require('lazy').setup({
       --  So, we create new capabilities with blink.cmp, and then broadcast that to the servers.
       local capabilities = require('blink.cmp').get_lsp_capabilities()
 
-      -- Enable the following language servers
-      --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
-      --
-      --  Add any additional override configuration in the following tables. Available keys are:
-      --  - cmd (table): Override the default command used to start the server
-      --  - filetypes (table): Override the default list of associated filetypes for the server
-      --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
-      --  - settings (table): Override the default settings passed when initializing the server.
-      --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+      -- Enable the following language servers providers (LSP)
       local servers = {
 
         -- C and C++
@@ -1039,7 +984,17 @@ require('lazy').setup({
         },
 
         -- Python
-        ty = {},
+        basedpyright = {
+          settings = {
+            basedpyright = {
+              analysis = {
+                autoSearchPaths = true,
+                diagnosticMode = 'openFilesOnly',
+                useLibraryCodeForTypes = true,
+              },
+            },
+          },
+        },
 
         -- Rust
         rust_analyzer = {},
@@ -1073,19 +1028,7 @@ require('lazy').setup({
         },
       }
 
-      -- Ensure the servers and tools above are installed
-      --
-      -- To check the current status of installed tools and/or manually install
-      -- other tools, you can run
-      --    :Mason
-      --
-      -- You can press `g?` for help in this menu.
-      --
-      -- `mason` had to be setup earlier: to configure its options see the
-      -- `dependencies` table for `nvim-lspconfig` above.
-      --
-      -- You can add other tools here that you want Mason to install
-      -- for you, so that they are available from within Neovim.
+      -- Additional tools to install
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
 
@@ -1097,41 +1040,45 @@ require('lazy').setup({
         'shfmt', -- Bash formatter
 
         -- Linters
-        -- cppcheck C linter (Installed through OS)
         'checkstyle', -- Java linter
         'checkmake', -- Makefile linter
         'shellcheck', -- Bash linter
       })
+
+      -- Remove already installed tools from the list
+      ensure_installed = vim.tbl_filter(function(tool)
+        -- Selectivly always download these tools
+        local skip = {
+          ['basedpyright'] = true,
+          ['ruff'] = true,
+        }
+        if skip[tool] then
+          return false
+        end
+
+        local binary_map = {
+          ['lua_ls'] = 'lua-language-server',
+          ['bashls'] = 'bash-language-server',
+          ['cmake'] = 'cmake-language-server',
+        }
+        -- Bassicly a translates to if (tool in binary map) binary_map[tool] else tool
+        local binary_name = binary_map[tool] or tool
+
+        return vim.fn.executable(binary_name) == 0
+      end, ensure_installed)
+
+      -- Install tools
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
-      require('mason-lspconfig').setup {
-        ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
-        automatic_installation = false,
-      }
-
       -- Loop through the servers table and set them up natively
-      for server_name, server_config in pairs(servers) do
-        if not lsp_disabled then
-          break
-        end
-        -- Inject your blink.cmp capabilities
-        server_config.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server_config.capabilities or {})
+      if not lsp_disabled then
+        for server_name, server_config in pairs(servers) do
+          -- Inject your blink.cmp capabilities
+          server_config.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server_config.capabilities or {})
 
-        -- Polyfill for Astral's 'ty' server
-        -- It's so new that nvim-lspconfig doesn't have defaults for it yet!
-        if server_name == 'ty' then
-          server_config.cmd = server_config.cmd or { 'ty', 'server' }
-          server_config.filetypes = server_config.filetypes or { 'python' }
-          server_config.root_markers = server_config.root_markers or { 'ty.toml', 'pyproject.toml', '.git' }
-        end
-
-        -- Use Neovim 0.11 native LSP API
-        if vim.fn.has 'nvim-0.11' == 1 then
+          -- Use Neovim 0.11 native LSP API
           vim.lsp.config(server_name, server_config)
           vim.lsp.enable(server_name)
-        else
-          -- Fallback for Neovim 0.10
-          require('lspconfig')[server_name].setup(server_config)
         end
       end
     end,
