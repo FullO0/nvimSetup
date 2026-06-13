@@ -208,7 +208,7 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
 
 -- Lua specific settings
 vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
-  pattern = { '*.lua' },
+  pattern = { 'lua' },
   callback = function()
     if not vim.b.editorconfig or vim.tbl_isempty(vim.b.editorconfig) then
       vim.opt_local.tabstop = 2
@@ -221,7 +221,7 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
 
 -- Python specific settings
 vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
-  pattern = { '*.py' },
+  pattern = { 'py' },
   callback = function()
     if not vim.b.editorconfig or vim.tbl_isempty(vim.b.editorconfig) then
       vim.opt_local.tabstop = 4
@@ -245,13 +245,15 @@ vim.api.nvim_create_autocmd({ 'FileType' }, {
 
 -- JSON specific settings
 vim.api.nvim_create_autocmd({ 'FileType' }, {
-  pattern = { '*.json' },
+  pattern = { 'json' },
   callback = function()
-    vim.opt_local.expandtab = true
-    vim.opt_local.tabstop = 2
-    vim.opt_local.shiftwidth = 2
-    vim.opt_local.softtabstop = 2
-    vim.opt_local.textwidth = 0
+    if not vim.b.editorconfig or vim.tbl_isempty(vim.b.editorconfig) then
+      vim.opt_local.expandtab = true
+      vim.opt_local.tabstop = 2
+      vim.opt_local.shiftwidth = 2
+      vim.opt_local.softtabstop = 2
+      vim.opt_local.textwidth = 0
+    end
   end,
 })
 
