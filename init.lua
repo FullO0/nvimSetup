@@ -1059,7 +1059,6 @@ require('lazy').setup({
         local binary_map = {
           ['lua_ls'] = 'lua-language-server',
           ['bashls'] = 'bash-language-server',
-          ['cmake'] = 'cmake-language-server',
         }
         -- Bassicly a translates to if (tool in binary map) binary_map[tool] else tool
         local binary_name = binary_map[tool] or tool
