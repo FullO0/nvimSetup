@@ -1084,6 +1084,16 @@ require('lazy').setup({
             },
           },
         },
+
+        -- JavaScript, JSX and TypeScript
+        ts_ls = {},
+        eslint = {},
+
+        -- HTML
+        html = {},
+
+        -- CSS
+        cssls = {},
       }
 
       -- Additional tools to install
@@ -1096,6 +1106,7 @@ require('lazy').setup({
         'clang-format', -- C formatter
         'google-java-format', -- Java formatter
         'shfmt', -- Bash formatter
+        'prettier', -- Definitive web development formatter
 
         -- Linters
         'checkstyle', -- Java linter
@@ -1147,7 +1158,6 @@ require('lazy').setup({
         makefile = { 'checkmake' },
         bash = { 'shellcheck' },
         sh = { 'shellcheck' },
-        -- c = { 'cppcheck' }, Temp until I get to automating downloading cppcheck
         python = { 'ruff' },
         java = { 'checkstyle' },
       }
@@ -1162,23 +1172,6 @@ require('lazy').setup({
         end,
       })
     end,
-  },
-
-  { -- Python Venv Selector
-    'linux-cultist/venv-selector.nvim',
-    dependencies = {
-      'neovim/nvim-lspconfig',
-      { 'nvim-telescope/telescope.nvim', branch = '0.1.x', dependencies = { 'nvim-lua/plenary.nvim' } },
-    },
-    ft = 'python',
-    opts = {
-      name = { 'venv', '.venv', 'env', '.env' },
-      anaconda_bass_path = '/home/christian/anaconda3/',
-      anaconda_envs_path = '/home/christian/anaconda3/envs/',
-    },
-    keys = {
-      { '<leader>pvs', '<cmd>VenvSelect<cr>', desc = '[P]ython [V]env [S]elector' },
-    },
   },
 
   { -- Autoformat
@@ -1217,6 +1210,10 @@ require('lazy').setup({
         rust = { 'rustfmt', lsp_format = 'fallback' },
         make = { 'trim_whitespace' },
         bash = { 'shmft' },
+        javascript = { 'prettier' },
+        javascriptreact = { 'prettier' },
+        css = { 'prettier' },
+        html = { 'prettier' },
       },
     },
   },
@@ -1319,6 +1316,23 @@ require('lazy').setup({
 
       -- Shows a signature help window while you type arguments for a function
       signature = { enabled = true },
+    },
+  },
+
+  { -- Python Venv Selector
+    'linux-cultist/venv-selector.nvim',
+    dependencies = {
+      'neovim/nvim-lspconfig',
+      { 'nvim-telescope/telescope.nvim', branch = '0.1.x', dependencies = { 'nvim-lua/plenary.nvim' } },
+    },
+    ft = 'python',
+    opts = {
+      name = { 'venv', '.venv', 'env', '.env' },
+      anaconda_bass_path = '/home/christian/anaconda3/',
+      anaconda_envs_path = '/home/christian/anaconda3/envs/',
+    },
+    keys = {
+      { '<leader>pvs', '<cmd>VenvSelect<cr>', desc = '[P]ython [V]env [S]elector' },
     },
   },
 
