@@ -243,16 +243,15 @@ vim.api.nvim_create_autocmd({ 'FileType' }, {
   end,
 })
 
--- JSON specific settings
+-- Web file specific settings
 vim.api.nvim_create_autocmd({ 'FileType' }, {
-  pattern = { 'json' },
+  pattern = { 'json', 'javascript', 'javascriptreact', 'css', 'html' },
   callback = function()
     if not vim.b.editorconfig or vim.tbl_isempty(vim.b.editorconfig) then
       vim.opt_local.expandtab = true
       vim.opt_local.tabstop = 2
       vim.opt_local.shiftwidth = 2
       vim.opt_local.softtabstop = 2
-      vim.opt_local.textwidth = 0
     end
   end,
 })
