@@ -180,9 +180,9 @@ vim.api.nvim_create_autocmd({ 'FileType' }, {
   end,
 })
 
--- C specific settinges
-vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
-  pattern = { '*.c', '*.h' },
+-- C & C++ specific settinges
+vim.api.nvim_create_autocmd({ 'FileType' }, {
+  pattern = { 'c', 'cpp' },
   callback = function()
     if not vim.b.editorconfig or vim.tbl_isempty(vim.b.editorconfig) then
       vim.opt_local.tabstop = 4
@@ -194,8 +194,8 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
 })
 
 -- nasm specific settings
-vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
-  pattern = { '*.asm' },
+vim.api.nvim_create_autocmd({ 'FileType' }, {
+  pattern = { 'asm' },
   callback = function()
     if not vim.b.editorconfig or vim.tbl_isempty(vim.b.editorconfig) then
       vim.opt_local.tabstop = 2
@@ -207,7 +207,7 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
 })
 
 -- Lua specific settings
-vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
+vim.api.nvim_create_autocmd({ 'FileType' }, {
   pattern = { 'lua' },
   callback = function()
     if not vim.b.editorconfig or vim.tbl_isempty(vim.b.editorconfig) then
@@ -220,7 +220,7 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
 })
 
 -- Python specific settings
-vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWinEnter' }, {
+vim.api.nvim_create_autocmd({ 'FileType' }, {
   pattern = { 'py' },
   callback = function()
     if not vim.b.editorconfig or vim.tbl_isempty(vim.b.editorconfig) then
@@ -303,10 +303,12 @@ if not lsp_disabled then
   table.insert(default_sources, 'lazydev')
 end
 
+-- Add nvims python env to path
+vim.env.PATH = vim.fn.expand '~/.virtualenvs/nvim/bin' .. ':' .. vim.env.PATH
+vim.g.python3_host_prog = vim.fn.expand '~/.virtualenvs/nvim/bin/python'
+
 --- Lazy ---
 require('lazy').setup({
-
-  -- TODO: Get rainbow-delimiters or something like it
 
   { -- Colorizer for hex codes / functions
     'catgoose/nvim-colorizer.lua',
@@ -521,14 +523,12 @@ require('lazy').setup({
           style = 'Warmer',
         },
 
-        -- Override some colors to fit in with my terminal and tmux configuration
+        -- Override onedark default colors with my own
         colors = custom_colors,
       }
       require('onedark').load()
 
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+      -- Load the colorscheme
       vim.cmd.colorscheme 'onedark'
     end,
   },
@@ -1040,13 +1040,18 @@ require('lazy').setup({
         basedpyright = {
           settings = {
             basedpyright = {
+              disableOrganizeImports = true,
               analysis = {
-                autoSearchPaths = true,
-                diagnosticMode = 'openFilesOnly',
-                useLibraryCodeForTypes = true,
+                reportUnusedImport = 'none',
+                reportUnusedVariable = 'none',
               },
             },
           },
+        },
+        ruff = {
+          on_attach = function(client, _)
+            client.server_capabilities.hoverProvider = false
+          end,
         },
 
         -- Rust
@@ -1087,8 +1092,8 @@ require('lazy').setup({
 
         -- Formatters
         'stylua', -- Lua formatter
+        'ruff', -- python formatter and linter
         'clang-format', -- C formatter
-        'ruff', -- Python formatter
         'google-java-format', -- Java formatter
         'shfmt', -- Bash formatter
 
@@ -1101,10 +1106,7 @@ require('lazy').setup({
       -- Remove already installed tools from the list
       ensure_installed = vim.tbl_filter(function(tool)
         -- Selectivly always download these tools
-        local skip = {
-          ['basedpyright'] = true,
-          ['ruff'] = true,
-        }
+        local skip = {}
         if skip[tool] then
           return false
         end
