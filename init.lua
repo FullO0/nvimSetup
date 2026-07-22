@@ -243,6 +243,16 @@ vim.api.nvim_create_autocmd({ 'FileType' }, {
   end,
 })
 
+-- Java specific settings
+vim.api.nvim_create_autocmd({ 'FileType' }, {
+  pattern = { 'java' },
+  callback = function()
+    vim.opt_local.expandtab = true
+    vim.opt_local.tabstop = 2
+    vim.opt_local.shiftwidth = 2
+  end,
+})
+
 -- Web file specific settings
 vim.api.nvim_create_autocmd({ 'FileType' }, {
   pattern = { 'json', 'javascript', 'javascriptreact', 'css', 'html' },
@@ -1191,14 +1201,14 @@ require('lazy').setup({
       async = false,
       notify_on_error = false,
       format_on_save = function(bufnr)
-        local disable_filetypes = { c = true, cpp = true }
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          return nil
-        else
+        local enable_filetypes = { python = true, lua = true }
+        if enable_filetypes[vim.bo[bufnr].filetype] then
           return {
             timeout_ms = 2500,
             lsp_format = 'fallback',
           }
+        else
+          return nil
         end
       end,
       formatters_by_ft = {
@@ -1355,7 +1365,6 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     opts = {
       ensure_installed = {
         'bash',
