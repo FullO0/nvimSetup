@@ -14,14 +14,7 @@ return { -- CodeCompanion
     return not ai_disabled
   end,
 
-  -- Keymaps
-  keys = {
-    { '<leader>ccc', '<cmd>CodeCompanionChat Toggle<cr>', desc = '[C]ode[C]ompanion [C]hat' },
-    { '<leader>ccp', '<cmd>CodeCompanion<cr>', desc = '[C]ode[C]ompanion [P]rompt' },
-    { '<leader>cca', '<cmd>CodeCompanionActions<cr>', desc = '[C]ode[C]ompanion [A]ction' },
-    { '<leader>ccC', '<cmd>CodeCompanionCmd<cr>', desc = '[C]ode[C]ompanion [C]md' },
-    { '<leader>ccga', '<cmd>CodeCompanionChat Add<cr>', mode = 'v', desc = '[C]ode[C]ompanion [G]rap [A]dd Code to Chat' },
-  },
+  keys = require('config.plugin-keymaps').keys.codecompanion,
 
   opts = {
     opts = {

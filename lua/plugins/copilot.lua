@@ -8,10 +8,10 @@ return {
     return not ai_disabled
   end,
 
+  keys = require('config.plugin-keymaps').keys.copilot,
   cmd = 'Copilot',
   event = 'InsertEnter',
   config = function()
-    vim.keymap.set('n', '<leader>cpt', '<cmd>Copilot toggle<cr>', { desc = '[C]o[P]ilot [T]oggle' })
     require('copilot').setup {
       suggestion = {
         enabled = true,

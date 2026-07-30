@@ -1,10 +1,13 @@
 -- [[ Setting options ]]
--- See `:help vim.opt`
--- NOTE: You can change these options as you wish!
---  For more options, you can see `:help option-list`
+
+-- Add python env for just nvim to use ( Run setup.sh if you have not already )
+local python_bin = vim.fn.expand '~/.local/.venv/nvim/bin'
+if vim.fn.isdirectory(python_bin) == 1 then
+  vim.env.PATH = python_bin .. ':' .. vim.env.PATH
+  vim.g.python3_host_prog = python_bin .. '/python'
+end
 
 -- Set <space> as the leader key
--- See `:help mapleader`
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 

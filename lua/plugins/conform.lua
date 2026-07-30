@@ -2,16 +2,7 @@ return { -- Autoformat
   'stevearc/conform.nvim',
   event = { 'BufWritePre' },
   cmd = { 'ConformInfo' },
-  keys = {
-    {
-      '<leader>f',
-      function()
-        require('conform').format { async = false, lsp_format = 'fallback' }
-      end,
-      mode = '',
-      desc = '[F]ormat buffer',
-    },
-  },
+  keys = require('config.plugin-keymaps').keys.conform,
   opts = {
     async = false,
     notify_on_error = false,
@@ -38,6 +29,7 @@ return { -- Autoformat
       javascriptreact = { 'prettier' },
       css = { 'prettier' },
       html = { 'prettier' },
+      r = { 'lsp' },
     },
   },
 }

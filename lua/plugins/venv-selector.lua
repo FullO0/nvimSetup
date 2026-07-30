@@ -10,7 +10,5 @@ return { -- Python Venv Selector
     anaconda_bass_path = '/home/christian/anaconda3/',
     anaconda_envs_path = '/home/christian/anaconda3/envs/',
   },
-  keys = {
-    { '<leader>pvs', '<cmd>VenvSelect<cr>', desc = '[P]ython [V]env [S]elector' },
-  },
+  keys = require('config.plugin-keymaps').keys.venv_selector,
 }
