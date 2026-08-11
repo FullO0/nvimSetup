@@ -24,6 +24,14 @@ M.keys = {
     { '<leader>pvs', '<cmd>VenvSelect<cr>', desc = '[P]ython [V]env [S]elector' },
   },
 
+  markdown_preview = {
+    {
+      '<leader>tmp',
+      '<cmd>MarkdownPreviewToggle<cr>',
+      desc = '[T]oggle [M]arkdown [P]review',
+    },
+  },
+
   debug = {
     {
       '<F5>',
